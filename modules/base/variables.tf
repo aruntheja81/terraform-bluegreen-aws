@@ -1,8 +1,8 @@
 variable "namespace" {
-    default = "terraforminaction"
-    type = string
+  default = "terraforminaction"
+  type    = string
 }
 
 variable "production" {
-    type = string
+  type = string
 }
