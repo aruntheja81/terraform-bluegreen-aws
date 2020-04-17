@@ -31,15 +31,15 @@ resource "aws_resourcegroups_group" "resourcegroups_group" {
 data "aws_availability_zones" "available" {}
 
 module "vpc" {
-  source                           = "terraform-aws-modules/vpc/aws"
-  version                          = "2.17.0"
-  name                             = "${local.namespace}-vpc"
-  cidr                             = "10.0.0.0/16"
-  azs                              = data.aws_availability_zones.available.names
-  private_subnets                  = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-  public_subnets                   = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
-  enable_nat_gateway               = true
-  single_nat_gateway               = true
+  source             = "terraform-aws-modules/vpc/aws"
+  version            = "2.17.0"
+  name               = "${local.namespace}-vpc"
+  cidr               = "10.0.0.0/16"
+  azs                = data.aws_availability_zones.available.names
+  private_subnets    = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+  public_subnets     = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
+  enable_nat_gateway = true
+  single_nat_gateway = true
 }
 
 module "lb_sg" {
@@ -117,11 +117,12 @@ resource "aws_lb_listener_rule" "lb_listener_rule" {
 
   action {
     type             = "forward"
-    target_group_arn =  var.production == "green" ? aws_lb_target_group.blue_target_group.arn : aws_lb_target_group.green_target_group.arn
+    target_group_arn = var.production == "green" ? aws_lb_target_group.blue_target_group.arn : aws_lb_target_group.green_target_group.arn
   }
 
   condition {
-    field  = "path-pattern"
-    values = ["/stg/*"]
+    path_pattern {
+      values = ["/stg/*"]
+    }
   }
 }

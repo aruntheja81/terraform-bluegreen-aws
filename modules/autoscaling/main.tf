@@ -15,8 +15,8 @@ data "aws_ami" "ubuntu" {
 }
 
 locals {
-  html = templatefile("${path.module}/server/index.html", { NAME = join("-", [var.group, var.app_version]), BG_COLOR = var.group })
-  startup = templatefile("${path.module}/server/startup.sh",{HTML = local.html})
+  html    = templatefile("${path.module}/server/index.html", { NAME = join("-", [var.group, var.app_version]), BG_COLOR = var.group })
+  startup = templatefile("${path.module}/server/startup.sh", { HTML = local.html })
 }
 
 resource "aws_launch_template" "webserver" {
@@ -35,9 +35,9 @@ resource "aws_launch_template" "webserver" {
 }
 
 resource "aws_autoscaling_group" "webserver" {
-  name                = "${var.base.namespace}-${var.group}-asg"
-  min_size            = 3
-  max_size            = 3
+  name     = "${var.base.namespace}-${var.group}-asg"
+  min_size = 3
+  max_size = 3
   //vpc_zone_identifier = var.base.vpc.private_subnets
   vpc_zone_identifier = var.base.vpc.public_subnets
   target_group_arns   = var.group == "green" ? var.base.target_group_arns.green : var.base.target_group_arns.blue
